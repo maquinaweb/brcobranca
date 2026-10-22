@@ -10,8 +10,20 @@ name: CI
 on:
   push:
     branches: [ master ]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - ".gitignore"
   pull_request:
     branches: [ master ]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - ".gitignore"
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -20,6 +32,7 @@ jobs:
   test:
     name: Ruby ${{ matrix.ruby }}
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false # don't fail all matrix builds if one fails
       matrix:
